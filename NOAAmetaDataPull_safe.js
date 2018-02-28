@@ -56,15 +56,13 @@ function asyncCall(endpoint, params, apiKey){
         .then(
             function(body){
                 var data = JSON.parse(body);
-                console.log(data.results);
-                /*
+                //console.log(data.results);
                 var conn = dbInterface.createConn();    //connect to mysql database
                 for(var elem in data.results){
                     var queryObj = rowParser.makeRow(endpoint, data.results[elem]);     //create a row to be inserted
                     rowParser.insertRow(conn, endpoint, queryObj);                      //insert row to correct table
                 }
                 dbInterface.endConn(conn);              //close connection to mysql database
-                */
             }
         )
         .catch(
