@@ -11,7 +11,7 @@
  *  prerequisites: mysql database, './dbInterface.js' module
  **************************************************************************/
 
-var dbInterface = require("./dbInterface.js");
+var dbInterface = require("./dbInterface_safe.js");
 
 
 /**************************************************************************
