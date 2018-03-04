@@ -6,7 +6,7 @@
  * rate-limited fashion using primarily promises rather than callbacks. Notes:
  *      -NOAA API returns response metadata if requested, including total count
  *      -NOAA API limits response volume to max of 1000 entities per call
- *      -NOAA API is largely dependent on endpoint string, sowould be extremely surprising if endpoint strings 
+ *      -NOAA API is largely dependent on endpoint string, so would be extremely surprising if endpoint strings 
  *      were changed
  *      -NOAA API is rate-limited to 5 calls per second, per token, though in reality it limits to ~300ms/call
  * 
