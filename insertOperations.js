@@ -25,7 +25,7 @@ module.exports.station = function stationInsert(connectionObj, stationObj){
                 "(noaa_id,mindate,maxdate,name,datacoverage,elevation,latitude,longitude) "+
                 "values "+
                 "(?,?,?,?,?,?,?,?)";
-    dbInterface.runQuery(connectionObj, query, stationObj);
+    dbInterface.runQuery(connectionObj, query, stationObj, dbInterface.emptyCallback);
 }
 
 
@@ -40,7 +40,7 @@ module.exports.dataset = function datasetInsert(connectionObj, datasetObj){
                 "(noaa_uid,noaa_id,mindate,maxdate,name,datacoverage) "+
                 "values "+
                 "(?,?,?,?,?,?)";
-    dbInterface.runQuery(connectionObj, query, datasetObj);
+    dbInterface.runQuery(connectionObj, query, datasetObj, dbInterface.emptyCallback);
 }
 
 
@@ -55,7 +55,7 @@ module.exports.datacategory = function datacategoryInsert(connectionObj, datacat
                 "(noaa_id,name) "+
                 "values "+
                 "(?,?)";
-    dbInterface.runQuery(connectionObj, query, datacategoryObj);
+    dbInterface.runQuery(connectionObj, query, datacategoryObj, dbInterface.emptyCallback);
 }
 
 
@@ -70,7 +70,7 @@ module.exports.locationcategory = function locationcategoryInsert(connectionObj,
                 "(noaa_id,name) "+
                 "values "+
                 "(?,?)";
-    dbInterface.runQuery(connectionObj, query, locationcategoryObj);
+    dbInterface.runQuery(connectionObj, query, locationcategoryObj, dbInterface.emptyCallback);
 }
 
 
@@ -85,7 +85,7 @@ module.exports.datatype = function datatypeInsert(connectionObj, datatypeObj){
                 "(noaa_id,mindate,maxdate,name,datacoverage) "+
                 "values "+
                 "(?,?,?,?,?)";
-    dbInterface.runQuery(connectionObj, query, datatypeObj);
+    dbInterface.runQuery(connectionObj, query, datatypeObj, dbInterface.emptyCallback);
 }
 
 
@@ -100,6 +100,15 @@ module.exports.location = function locationInsert(connectionObj, locationObj){
                 "(noaa_id,mindate,maxdate,name,datacoverage) "+
                 "values "+
                 "(?,?,?,?,?)";
-    dbInterface.runQuery(connectionObj, query, locationObj);
+    dbInterface.runQuery(connectionObj, query, locationObj, dbInterface.emptyCallback);
 }
 
+
+
+module.exports.gsom = function gsomInsert(connectionObj, gsomObj){
+    var query = "insert into gsom "+
+                "(datatype_id,station_id,date,attributes,value) "+
+                "values "+
+                "( (select id from datatype where noaa_id = ?),(select id from station where noaa_id = ?),?,?,?)";
+    dbInterface.runQuery(connectionObj, query, gsomObj, dbInterface.emptyCallback);
+}
