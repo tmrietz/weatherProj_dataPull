@@ -21,8 +21,8 @@ var insertOperations = require('./insertOperations.js');
  * data.results response from call to NOAA API. Creates a query array,
  * based on an endpoint string, to be passed to insertRow().
  **************************************************************************/
-module.exports.makeRow = function makeRow(endpointStr, resultsObj){
-    var queryArr;           //initialize queryArr
+module.exports.makeRow = function makeRow(endpointStr, paramsObj, resultsObj){
+    var queryArr;                           //initialize queryArr
     switch(endpointStr){
         
         case 'stations':
@@ -77,6 +77,19 @@ module.exports.makeRow = function makeRow(endpointStr, resultsObj){
                         ];
         break;
 
+        case 'data':
+            switch(paramsObj.datasetid){
+                case 'GSOM':
+                    queryArr = [resultsObj.datatype,
+                                resultsObj.station,
+                                resultsObj.date,
+                                resultsObj.attributes,
+                                resultsObj.value
+                                ];
+                break;
+            }
+        break;
+
         //case 'data': FURTHER TO WRITE, BASED ON ACTUAL DATASETS TO PULL DATA FROM
     }
     return queryArr;
@@ -90,7 +103,7 @@ module.exports.makeRow = function makeRow(endpointStr, resultsObj){
  * NOAA API endpoint. Inserts data from that query array into the correct table, 
  * based on the API endpoint. 
  **************************************************************************/
-module.exports.insertRow = function insertRow(connectionObj, endpoint, queryArr){
+module.exports.insertRow = function insertRow(connectionObj, endpoint, paramsObj, queryArr){
     switch(endpoint){
 
         case 'stations': //insert into station table
@@ -116,6 +129,13 @@ module.exports.insertRow = function insertRow(connectionObj, endpoint, queryArr)
         case 'locations': //insert into location table
             insertOperations.location(connectionObj, queryArr);
         break;
-        
+
+        case 'data':
+            switch(paramsObj.datasetid){
+                case 'GSOM':
+                    insertOperations.gsom(connectionObj, queryArr);
+                break;
+            }
+        break;
     }
 }
