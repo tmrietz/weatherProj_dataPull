@@ -115,5 +115,5 @@ function createTables(){
     dbInterface.endConn(conn);
 }
 
-//dropTables();
+//dropTables();       //run to reset all tables
 createTables();
