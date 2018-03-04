@@ -9,7 +9,7 @@
  *  prerequisites: mysql database, './dbInterface.js' module
  **************************************************************************/
 
-var dbInterface = require("./dbInterface.js");
+var dbInterface = require("./dbInterface_safe.js");
 
 var createStationTable =    "create table station("+
                             "id int not null auto_increment,"+
@@ -72,12 +72,26 @@ var createLocationTable =   "create table location("+
                             "primary key(id),"+
                             "unique(noaa_id) )";
 
+var createGSOMTable     =   "create table gsom("+
+                            "id int not null auto_increment,"+
+                            "datatype_id int not null,"+
+                            "station_id int not null,"+
+                            "date date not null,"+
+                            "attributes text,"+
+                            "value decimal(12,6),"+
+                            "primary key(id),"+
+                            "unique(datatype_id,station_id,date),"+
+                            "foreign key(datatype_id) references datatype(id),"+
+                            "foreign key(station_id) references station(id) )";
+
 var dropStationTable = "drop table if exists station";
 var dropDatasetTable = "drop table if exists dataset";
 var dropDatacategoryTable = "drop table if exists datacategory";
 var dropDatatypeTable = "drop table if exists datatype";
 var dropLocationTable = "drop table if exists location";
 var dropLocationcategoryTable = "drop table if exists locationcategory";
+var dropGSOMTable = "drop table if exists gsom";
+
 
 var createSchema = {
     station: createStationTable,
@@ -85,8 +99,10 @@ var createSchema = {
     datacategory: createDatacategoryTable,
     datatypes: createDatatypeTable,
     locations: createLocationTable,
-    locationcategory: createLocationcategoryTable
+    locationcategory: createLocationcategoryTable,
+    gsom: createGSOMTable
 };
+module.exports.createSchema = createSchema;
 
 var dropSchema = {
     station: dropStationTable,
@@ -94,26 +110,36 @@ var dropSchema = {
     datacategory: dropDatacategoryTable,
     datatype: dropDatatypeTable,
     location: dropLocationTable,
-    locationcategory: dropLocationcategoryTable  
+    locationcategory: dropLocationcategoryTable,
+    gsom: dropGSOMTable  
 };
+module.exports.dropSchema = dropSchema;
 
 
-function dropTables(){
+function singleTableOperation(queryStr){
+    var conn = dbInterface.createConn();
+    dbInterface.runQuery(conn, queryStr, [], dbInterface.emptyCallback);
+    dbInterface.endConn(conn);
+}
+
+
+module.exports.dropTables = function dropTables(){
     var conn = dbInterface.createConn();
     for(elem in dropSchema){
-        dbInterface.runQuery(conn, dropSchema[elem], []);
+        dbInterface.runQuery(conn, dropSchema[elem], [], dbInterface.emptyCallback);
     }
     dbInterface.endConn(conn);
 }
 
 
-function createTables(){
+module.exports.createTables = function createTables(){
     var conn = dbInterface.createConn();
     for(elem in createSchema){
-        dbInterface.runQuery(conn, createSchema[elem], []);
+        dbInterface.runQuery(conn, createSchema[elem], [], dbInterface.emptyCallback);
     }
     dbInterface.endConn(conn);
 }
 
-//dropTables();       //run to reset all tables
-createTables();
+
+//singleTableOperation(dropSchema.gsom);
+//singleTableOperation(createSchema.gsom);
