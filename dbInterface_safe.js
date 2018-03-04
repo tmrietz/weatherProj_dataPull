@@ -12,7 +12,7 @@
  *  prerequisites: mysql database already initialized, Node.js 'mysql' package
  **************************************************************************/
 
- var mysql = require('mysql');
+var mysql = require('mysql');
 
  
 /**************************************************************************
@@ -22,10 +22,10 @@
  **************************************************************************/
 module.exports.createConn = function createConn(){
     var conn = mysql.createConnection({
-        host            : //yours,
-        user            : //yours,
-        password        : //yours,
-        database        : //yours
+        host            : //'yours',
+        user            : //'yours',
+        password        : //'yours',
+        database        : //'yours'
     });
     if(conn){
         console.log("Connection successful.");
@@ -43,16 +43,31 @@ module.exports.createConn = function createConn(){
  * results object. If there was an error, log the query that resulted in
  * error, and also the error.
  **************************************************************************/
-module.exports.runQuery = function runQuery(connectionObj, queryStr, valuesArr){
-    connectionObj.query( queryStr, valuesArr, function (error, results, fields){
+module.exports.runQuery = function runQuery(connectionObj, queryStr, valuesArr, func){
+    function processResults(error, results, fields){
         if(!error){
-            console.log(results);
-        } else {
-            console.log("Error with query: " + queryStr);
-            console.log(error);
+            console.log("ID: ", results.insertId, "Affected rows: ", results.affectedRows, "Changed rows: ", results.changedRows);
+            func(results);
+        } else if(!error.fatal){
+            console.log(error.sql);
+            console.log(error.code);
+            console.log(error.sqlMessage);
+        } else if(error.fatal){
+            console.log(error.fatal);
         }
-    });
+    }
+    connectionObj.query( queryStr, valuesArr, processResults);
 }
+
+/**************************************************************************
+ * emptyCallback:
+ * Because query results MUST be handled in a callback in conn.query, and
+ * runQuery() wraps conn.query, we need to provide a query specific callback
+ * to runQuery(), to then be used in the query callback, when selecting data. 
+ * (read: callback hell)
+ * When inserting or updating data, we provide a callback that just returns.
+ **************************************************************************/
+module.exports.emptyCallback = function emptyCallback(){return;}
 
 
 /**************************************************************************

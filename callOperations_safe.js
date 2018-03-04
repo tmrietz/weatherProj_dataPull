@@ -6,7 +6,7 @@
  * rate-limited fashion using primarily promises rather than callbacks. Notes:
  *      -NOAA API returns response metadata if requested, including total count
  *      -NOAA API limits response volume to max of 1000 entities per call
- *      -NOAA API is largely dependent on endpoint string, so would be extremely surprising if endpoint strings 
+ *      -NOAA API is largely dependent on endpoint string, sowould be extremely surprising if endpoint strings 
  *      were changed
  *      -NOAA API is rate-limited to 5 calls per second, per token, though in reality it limits to ~300ms/call
  * 
@@ -23,7 +23,7 @@ var request = require("request-promise");           //used for asynchronous, pro
 var req = require("request");                       //used for asynchronous, non-promise-based calls
 var dbInterface = require("./dbInterface_safe.js"); //simple interface to mysql database
 var rowParser = require("./rowParser.js");          //NOAA API-specific row parsing and sql inserting
-var apiKey = "YOUR KEY HERE";                       //NOAA token
+var apiKey = "YOUR KEY HERE";    //NOAA token
 module.exports.apiKey = apiKey;
 
 /**************************************************************************
@@ -131,3 +131,25 @@ module.exports.getData = function getData(endpoint, params, apiKey){
     }
     req(reqOptions, getResponseCount);                      //simple async request, no promises
 }
+
+
+/*
+var params = {
+    datasetid: 'GSOM',
+    startdate: '2017-05-01',
+    enddate: '2017-08-01',
+    limit: 1000,
+    offset: 1,
+    includemetadata: 'true'
+};
+*/
+
+
+/*EACH OF THESE CAN BE RUN ONE AT A TIME RIGHT NOW*/
+//getData("stations", params, apiKey);
+//getData("datasets", params, apiKey);
+//getData("datacategories", params, apiKey);
+//getData("datatypes", params, apiKey);
+//getData("locationcategories", params, apiKey);
+//getData("locations", params, apiKey);
+//getData("data", params, apiKey);
